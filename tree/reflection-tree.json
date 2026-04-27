@@ -1,0 +1,263 @@
+{
+  "nodes": [
+    {
+      "id": "START",
+      "type": "start",
+      "text": "Good evening. Let’s take a moment to reflect on your day.",
+      "target": "A1_OPEN"
+    },
+    {
+      "id": "A1_OPEN",
+      "type": "question",
+      "text": "How would you describe your day overall?",
+      "options": [
+        "Productive",
+        "Challenging",
+        "Mixed",
+        "Frustrating"
+      ],
+      "target": "A1_DECISION"
+    },
+    {
+      "id": "A1_DECISION",
+      "type": "decision",
+      "rules": [
+        {
+          "condition": "answer=Productive|Mixed",
+          "target": "A1_Q_HIGH"
+        },
+        {
+          "condition": "answer=Challenging|Frustrating",
+          "target": "A1_Q_LOW"
+        }
+      ]
+    },
+    {
+      "id": "A1_Q_HIGH",
+      "type": "question",
+      "text": "What contributed most to things going well today?",
+      "options": [
+        "I planned and executed well",
+        "I adapted quickly",
+        "My team supported me",
+        "It worked out by chance"
+      ],
+      "signal_map": {
+        "I planned and executed well": "axis1:internal",
+        "I adapted quickly": "axis1:internal",
+        "My team supported me": "axis1:external",
+        "It worked out by chance": "axis1:external"
+      },
+      "target": "A1_SIGNAL_DECISION"
+    },
+    {
+      "id": "A1_Q_LOW",
+      "type": "question",
+      "text": "When things didn’t go as expected, how did you respond?",
+      "options": [
+        "I focused on what I could control",
+        "I waited for help",
+        "I felt stuck",
+        "I continued without adjusting my approach"
+      ],
+      "signal_map": {
+        "I focused on what I could control": "axis1:internal",
+        "I waited for help": "axis1:external",
+        "I felt stuck": "axis1:external",
+        "I continued without adjusting my approach": "axis1:internal"
+      },
+      "target": "A1_Q_EXTRA"
+    },
+    {
+      "id": "A1_Q_EXTRA",
+      "type": "question",
+      "text": "When facing difficulty, what guided your decision most?",
+      "options": [
+        "My own judgment",
+        "Advice from others",
+        "Circumstances",
+        "I wasn’t sure what to do"
+      ],
+      "signal_map": {
+        "My own judgment": "axis1:internal",
+        "Advice from others": "axis1:external",
+        "Circumstances": "axis1:external",
+        "I wasn’t sure what to do": "axis1:external"
+      },
+      "target": "A1_SIGNAL_DECISION"
+    },
+    {
+      "id": "A1_SIGNAL_DECISION",
+      "type": "decision",
+      "rules": [
+        {
+          "condition": "axis1.internal >= axis1.external",
+          "target": "A1_REFLECT_INTERNAL"
+        },
+        {
+          "condition": "axis1.external > axis1.internal",
+          "target": "A1_REFLECT_EXTERNAL"
+        }
+      ]
+    },
+    {
+      "id": "A1_REFLECT_INTERNAL",
+      "type": "reflection",
+      "text": "You described your day as '{A1_OPEN.answer}'. You recognized your role in how the day unfolded. Even small actions shaped outcomes — that’s agency.",
+      "target": "BRIDGE_1_2"
+    },
+    {
+      "id": "A1_REFLECT_EXTERNAL",
+      "type": "reflection",
+      "text": "You described your day as '{A1_OPEN.answer}'. It may have felt like things were out of your control today. Still, even in difficult moments, small choices exist. Noticing them is where control begins.",
+      "target": "BRIDGE_1_2"
+    },
+    {
+      "id": "BRIDGE_1_2",
+      "type": "bridge",
+      "text": "Now that you’ve looked at how you handled your day, let’s shift focus to what you contributed.",
+      "target": "A2_OPEN"
+    },
+    {
+      "id": "A2_OPEN",
+      "type": "question",
+      "text": "Which best describes your role in interactions today?",
+      "options": [
+        "I helped others beyond my role",
+        "I did what was expected of me",
+        "I expected more support than I received",
+        "I felt others weren’t doing enough"
+      ],
+      "signal_map": {
+        "I helped others beyond my role": "axis2:contribution",
+        "I did what was expected of me": "axis2:neutral",
+        "I expected more support than I received": "axis2:entitlement",
+        "I felt others weren’t doing enough": "axis2:entitlement"
+      },
+      "target": "A2_Q1"
+    },
+    {
+      "id": "A2_Q1",
+      "type": "question",
+      "text": "Think of one moment today. What was your focus in that moment?",
+      "options": [
+        "Helping someone succeed",
+        "Finishing my own task efficiently",
+        "Making sure my effort was recognized",
+        "Noticing where others fell short"
+      ],
+      "signal_map": {
+        "Helping someone succeed": "axis2:contribution",
+        "Finishing my own task efficiently": "axis2:neutral",
+        "Making sure my effort was recognized": "axis2:entitlement",
+        "Noticing where others fell short": "axis2:entitlement"
+      },
+      "target": "A2_SIGNAL_DECISION"
+    },
+    {
+      "id": "A2_SIGNAL_DECISION",
+      "type": "decision",
+      "rules": [
+        {
+          "condition": "axis2.contribution > axis2.entitlement",
+          "target": "A2_REFLECT_CONTRIB"
+        },
+        {
+          "condition": "axis2.entitlement >= axis2.contribution",
+          "target": "A2_REFLECT_ENTITLE"
+        }
+      ]
+    },
+    {
+      "id": "A2_REFLECT_CONTRIB",
+      "type": "reflection",
+      "text": "You spent energy contributing and supporting outcomes beyond just your own tasks. That kind of focus tends to create momentum—not just for you, but for the people around you.",
+      "target": "BRIDGE_2_3"
+    },
+    {
+      "id": "A2_REFLECT_ENTITLE",
+      "type": "reflection",
+      "text": "There were moments where your attention leaned toward what wasn’t given or what others didn’t do. That’s natural. Shifting even a small part of that attention toward what you can contribute often changes how those situations unfold.",
+      "target": "BRIDGE_2_3"
+    },
+    {
+      "id": "BRIDGE_2_3",
+      "type": "bridge",
+      "text": "Now let’s widen the lens—beyond just your role—to the impact of your actions.",
+      "target": "A3_OPEN"
+    },
+    {
+      "id": "A3_OPEN",
+      "type": "question",
+      "text": "When you think about today, who comes to mind most?",
+      "options": [
+        "Just myself and my workload",
+        "My immediate tasks and deadlines",
+        "My team and shared outcomes",
+        "People I impacted (customers/colleagues)"
+      ],
+      "signal_map": {
+        "Just myself and my workload": "axis3:self",
+        "My immediate tasks and deadlines": "axis3:self",
+        "My team and shared outcomes": "axis3:others",
+        "People I impacted (customers/colleagues)": "axis3:others"
+      },
+      "target": "A3_Q1"
+    },
+    {
+      "id": "A3_Q1",
+      "type": "question",
+      "text": "Which statement best reflects your impact today?",
+      "options": [
+        "I supported someone’s progress",
+        "I focused mainly on completing my own work",
+        "My actions caused delays or confusion",
+        "I improved someone’s experience or outcome"
+      ],
+      "signal_map": {
+        "I supported someone’s progress": "axis3:others",
+        "I focused mainly on completing my own work": "axis3:self",
+        "My actions caused delays or confusion": "axis3:self",
+        "I improved someone’s experience or outcome": "axis3:others"
+      },
+      "target": "A3_SIGNAL_DECISION"
+    },
+    {
+      "id": "A3_SIGNAL_DECISION",
+      "type": "decision",
+      "rules": [
+        {
+          "condition": "axis3.others > axis3.self",
+          "target": "A3_REFLECT_OTHERS"
+        },
+        {
+          "condition": "axis3.self >= axis3.others",
+          "target": "A3_REFLECT_SELF"
+        }
+      ]
+    },
+    {
+      "id": "A3_REFLECT_OTHERS",
+      "type": "reflection",
+      "text": "Your attention extended beyond your own tasks. You considered how your actions affected others—and that’s where meaningful impact tends to grow.",
+      "target": "SUMMARY"
+    },
+    {
+      "id": "A3_REFLECT_SELF",
+      "type": "reflection",
+      "text": "Most of your focus stayed on your own work today. That’s understandable. Even small shifts toward considering others can change both outcomes and how the day feels.",
+      "target": "SUMMARY"
+    },
+    {
+      "id": "SUMMARY",
+      "type": "summary",
+      "text": "Today you reflected on how you handled situations, what you contributed, and how your actions affected others. These patterns aren’t fixed—they can shift with small, intentional changes.",
+      "target": "END"
+    },
+    {
+      "id": "END",
+      "type": "end",
+      "text": "That’s it for today. See you tomorrow."
+    }
+  ]
+}
